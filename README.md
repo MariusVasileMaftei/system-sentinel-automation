@@ -23,12 +23,15 @@ A proactive system orchestration and infrastructure deployment suite. This proje
 ├── LICENSE             # MIT License
 └── .gitignore          # Security rules (protects credentials)
 
-⚙️ Installation & Setup
-1. Clone & Dependencies
-git clone [https://github.com/your-username/system-sentinel-automation.git]
-(https://github.com/your-username/system-sentinel-automation.git)
+## ⚙️ Installation & Setup
 
+### 1. Clone & Dependencies
+```bash
+# Clone the repository
+git clone [https://github.com/MariusVasileMaftei/system-sentinel-automation.git](https://github.com/MariusVasileMaftei/system-sentinel-automation.git)
 cd system-sentinel-automation
+
+# Install system dependencies
 sudo apt update && sudo apt install python3-requests python3-dotenv libaio1t64
 chmod +x system_startup.sh
 
