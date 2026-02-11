@@ -1,0 +1,3 @@
+# Standard libraries for API requests and environment variables
+requests
+python-dotenv
