@@ -25,7 +25,9 @@ A proactive system orchestration and infrastructure deployment suite. This proje
 
 ⚙️ Installation & Setup
 1. Clone & Dependencies
-git clone [https://github.com/your-username/system-sentinel-automation.git](https://github.com/your-username/system-sentinel-automation.git)
+git clone [https://github.com/your-username/system-sentinel-automation.git]
+(https://github.com/your-username/system-sentinel-automation.git)
+
 cd system-sentinel-automation
 sudo apt update && sudo apt install python3-requests python3-dotenv libaio1t64
 chmod +x system_startup.sh
