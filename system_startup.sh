@@ -46,15 +46,23 @@ fi
 echo "[->] Checking VMware status..."
 export DISPLAY=:0
 
-if pgrep -f "vmware" > /dev/null; then
-    echo "[!] VMware is already running. Skipping launch."
-    $PYTHON_BIN "$ALERT_SCRIPT" "[!] Sentinel: VMware was already active. No new instance started."
+if ps aux | grep "vmware-vmx" | grep -v "grep" | grep -q "$WIN_VM"; then
+    echo "[!] The Windows 10 VM is already running. Skipping launch."
+    $PYTHON_BIN "$ALERT_SCRIPT" "Sentinel: Windows 10 VM is already active. No action taken."
 else
+	# Check if any other VMware instance is running
+    if pgrep -x "vmware" > /dev/null; then
+        echo "[->] VMware UI is open, but the specific VM is not running. Launching now..."
+        $PYTHON_BIN "$ALERT_SCRIPT" "[->] VMware UI is open, but the specific VM is not running. Launching now..."        
+    fi
+
     echo "[->] Booting up the Windows environment in a new terminal..."
     gnome-terminal --title="Sentinel: VMware Engine" -- bash -c "
         echo '[->] Starting VMware...';
+        PYTHON_BIN '$ALERT_SCRIPT' '[->] Starting VMware...';
         if vmware -x '$WIN_VM'; then
             echo '[->] Windows VM interface is loading.';
+            PYTHON_BIN '$ALERT_SCRIPT' '[->] Windows VM is loaded';
             sleep 3;
         else
             echo '[!] VMware failed to start the machine.';
