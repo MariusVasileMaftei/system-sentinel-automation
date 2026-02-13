@@ -1,8 +1,13 @@
 #!/bin/bash
 
+# --- AUTOMATIC PATH DETECTION ---
+# Detects the absolute path of the directory where this script is located
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
+
 # --- CONFIGURATION ---
 PYTHON_BIN="/usr/bin/python3"
-ALERT_SCRIPT="/home/nexus/Programare/Python/PythonRush/BASHScripts/guard_alert.py"
+# Dynamically locate the python alert script in the same directory
+ALERT_SCRIPT="$SCRIPT_DIR/guard_alert.py"
 
 # Storage and VM Path
 VM_STORAGE="/mnt/vm_ssd"
