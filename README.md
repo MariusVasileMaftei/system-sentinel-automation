@@ -59,6 +59,20 @@ TELEGRAM_TOKEN=your_bot_token_here
 TELEGRAM_CHAT_ID=your_chat_id_here
 
 # ---------------------------------------------------
+
+4 OS Integration(Autostart)
+
+cat <<EOF > ~/.config/autostart/system_startup.desktop
+[Desktop Entry]
+Type=Application
+Exec=bash $(pwd)/system_startup.sh
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name=Sentinel Orchestrator
+Comment=Start VMware and Chrome
+EOF
+
 ```
 
 🛠️ Technical Insights
