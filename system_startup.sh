@@ -74,15 +74,13 @@ fi
 
 # --- STEP 4: GOOGLE CHROME ---
 echo "[->] Opening CHROME in a new terminal..."
-gnome-terminal --title="Sentinel: Chrome" -- bash -c "
-    if gio launch /usr/share/applications/google-chrome.desktop; then
-        echo '[->] Chrome launched successfully.';
-        sleep 2;
-    else
-        echo '[!] ERROR: Chrome failed to launch';
-        exec bash;
-    fi
-" &
+if nohup gio launch /usr/share/applications/google-chrome.desktop > /dev/null 2>&1 & then
+	echo '[->] Chrome launched successfully.'
+	$PYTHON_BIN "$ALERT_SCRIPT" "[->] Chrome launched."
+else
+	echo '[!] ERROR: Chrome failed to launch'
+    $PYTHON_BIN "$ALERT_SCRIPT" "[!] Error: Chrome failed to launch."
+fi
 
 disown -a
 echo "[->] All systems online. Closing terminal in 5s..."
