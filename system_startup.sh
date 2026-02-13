@@ -59,10 +59,10 @@ else
     echo "[->] Booting up the Windows environment in a new terminal..."
     gnome-terminal --title="Sentinel: VMware Engine" -- bash -c "
         echo '[->] Starting VMware...';
-        PYTHON_BIN '$ALERT_SCRIPT' '[->] Starting VMware...';
+        $PYTHON_BIN '$ALERT_SCRIPT' '[->] Starting VMware...';
         if vmware -x '$WIN_VM'; then
             echo '[->] Windows VM interface is loading.';
-            PYTHON_BIN '$ALERT_SCRIPT' '[->] Windows VM is loaded';
+            $PYTHON_BIN '$ALERT_SCRIPT' '[->] Windows VM is loaded';
             sleep 3;
         else
             echo '[!] VMware failed to start the machine.';
