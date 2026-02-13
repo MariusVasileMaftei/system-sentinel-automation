@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # --- AUTOMATIC PATH DETECTION ---
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 
@@ -9,6 +8,9 @@ ALERT_SCRIPT="$SCRIPT_DIR/guard_alert.py"
 VM_STORAGE="/mnt/vm_ssd"
 WIN_VM="$VM_STORAGE/vmware/Windows 10 x64/Windows 10 x64.vmx"
 REQUIRED_PKG="libaio1t64"
+
+# --- WELCOME ALERT ---
+$PYTHON_BIN "$ALERT_SCRIPT" "[->] System Online: Sentinel is now orchestrating your workspace."
 
 # --- FUNCTION: CHECK AND INSTALL DEPENDENCIES ---
 check_dependencies() {
