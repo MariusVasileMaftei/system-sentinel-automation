@@ -1,49 +1,70 @@
 # System Sentinel Automation 🛡️
 
-A proactive system orchestration and infrastructure deployment suite. This project was developed as a personal initiative to automate environment hardening, hardware validation, and virtualized infrastructure management on **Ubuntu 24.04 (Noble Numbat)**.
+A proactive system orchestration and hardware management suite. This project is a personal initiative designed to automate environment hardening, scheduled hardware power-on, and virtualized infrastructure deployment on **Ubuntu 24.04 (Noble Numbat)**.
 
 ## 🌟 Overview
 
-`System Sentinel` acts as a programmable "Guardian" for your workstation. It ensures that the host machine is updated, critical hardware is mounted, and system dependencies are resolved before launching mission-critical virtual environments.
+`System Sentinel` acts as a programmable "Guardian" for your workstation. It bridges the gap between hardware and software by scheduling BIOS wake-up events and ensuring the host machine is fully prepared before launching mission-critical environments.
 
-[Image of a professional DevOps automation workflow showing system updates, hardware checks, and service deployment]
+
 
 ### Key Features
-- **Host Hardening:** Automatically executes `sudo apt update` and `upgrade` to ensure the host OS is secure.
+- **Hardware Power Orchestration:** Schedules automatic PC wake-up events using the `rtcwake` engine (S5/Power-off state).
+- **Host Hardening:** Executes automated system updates and security upgrades.
 - **Dependency Self-Healing:** Detects and installs missing system libraries (specifically `libaio1t64` for modern Linux kernels).
-- **Hardware Validation:** Verifies the availability of dedicated SSD storage before initializing virtual disks.
-- **Virtualized Environment Orchestration:** Launches VMware Workstation in GUI mode with automated Power-On.
-- **Instant Telemetry:** Real-time status alerts sent via **Telegram Bot API** using a custom Python notification engine.
+- **Hardware Validation:** Verifies dedicated SSD mount status before initializing virtual disks.
+- **Virtualized Workspace:** Launches VMware Workstation with automated VM Power-On and persistent Google Chrome instances.
+- **Instant Telemetry:** Real-time status alerts and boot notifications sent via **Telegram Bot API**.
 
 ## 📁 Repository Structure
 ```text
-├── guard_alert.py      # Python notification engine
-├── system_startup.sh   # Main Bash orchestrator
-├── requirements.txt    # Python dependency list
-├── LICENSE             # MIT License
-└── .gitignore          # Security rules (protects credentials)
+├── sentinel_power_manager.sh  # Hardware RTC wake-up manager
+├── system_startup.sh          # Main workspace orchestrator
+├── guard_alert.py             # Python notification engine
+├── requirements.txt           # Python dependency list
+├── .gitignore                 # Security rules (protects credentials)
+└── LICENSE                    # MIT License
+```
 
-## ⚙️ Installation & Setup
-
-### 1. Clone & Dependencies
+⚙️ Installation & Setup
 ```bash
+1. Prerequisites
+
 # Clone the repository
+# ---------------------------------------------------
+
 git clone [https://github.com/MariusVasileMaftei/system-sentinel-automation.git](https://github.com/MariusVasileMaftei/system-sentinel-automation.git)
 cd system-sentinel-automation
 
-# Install system dependencies
-sudo apt update && sudo apt install python3-requests python3-dotenv libaio1t64
-chmod +x system_startup.sh
+# Set permissions
+chmod +x *.sh
 
-2. Configuration (Local Only)
-Create a .env file (this is ignored by Git):
+# ---------------------------------------------------
+
+2. Sudoers Configuration (For Automation)
+To allow the Power Manager to schedule hardware events without a password prompt, add this to
+
+$ sudo visudo
+# ---------------------------------------------------
+
+your_username ALL=(ALL) NOPASSWD: /usr/sbin/rtcwake
+
+# ---------------------------------------------------
+
+3. Environment Variables
+Create a .env file:
+# ---------------------------------------------------
+
 TELEGRAM_TOKEN=your_bot_token_here
 TELEGRAM_CHAT_ID=your_chat_id_here
 
+# ---------------------------------------------------
+```
+
 🛠️ Technical Insights
-- Library Conflict: Resolved libaio hang by targeting libaio1t64.
-- X11 Forwarding: Fixed GUI spawning by exporting DISPLAY=:0.
-- Stability: Utilized vmware -x for resilient automated boots.
+ - RTC Wake-up Logic: Utilizes UTC time conversion to synchronize the OS clock with the motherboard RTC.
+ - Process Persistence: Employs nohup and disown to ensure the workspace remains active after the orchestrator exits.
+ - X11 Display: Configured DISPLAY=:0 to ensure GUI applications spawn correctly from automation scripts.
 
 
 
