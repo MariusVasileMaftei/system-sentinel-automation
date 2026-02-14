@@ -9,6 +9,12 @@ VM_STORAGE="/mnt/vm_ssd"
 WIN_VM="$VM_STORAGE/vmware/Windows 10 x64/Windows 10 x64.vmx"
 REQUIRED_PKG="libaio1t64"
 
+# --- STEP 0: NETWORK CHECK IF IT IS ONLINE
+echo "[->] Waiting for network connection..."
+until ping -c 1 8.8.8.8 &>/dev/null; do
+	sleep 1
+done
+
 # --- WELCOME ALERT ---
 $PYTHON_BIN "$ALERT_SCRIPT" "[->] System Online: Sentinel is now orchestrating your workspace."
 

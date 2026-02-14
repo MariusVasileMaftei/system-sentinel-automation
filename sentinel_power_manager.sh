@@ -7,7 +7,7 @@ ALERT_SCRIPT="$SCRIPT_DIR/guard_alert.py"
 
 # --- USER SETTINGS ---
 # Change this to the time you want your station to wake up
-WAKE_TIME="08:00"
+WAKE_TIME="8:00"
 
 echo "[->] Sentinel Power Manager: Talking to the hardware clock..."
 
