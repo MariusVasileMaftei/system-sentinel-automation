@@ -65,12 +65,13 @@ TELEGRAM_CHAT_ID=your_chat_id_here
 cat <<EOF > ~/.config/autostart/system_startup.desktop
 [Desktop Entry]
 Type=Application
-Exec=bash $(pwd)/system_startup.sh
+Exec=gnome-terminal --title="Sentinel Boot" -- bash -c "sudo $SCRIPT_DIR/system_startup.sh; exec bash"
 Hidden=false
 NoDisplay=false
 X-GNOME-Autostart-enabled=true
 Name=Sentinel Orchestrator
-Comment=Start VMware and Chrome
+Comment=Start VMware and Chrome Orchestration
+Icon=utilities-terminal
 EOF
 
 ```
