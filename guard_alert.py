@@ -33,7 +33,7 @@ def send_alert(message):
         
         # Check if the message was successfully delivered
         if response.status_code == 200:
-            print("Alert sent! Check your device.")
+            print("Alert sent!")
         else:
             print(f"Telegram API Error: {response.text}")
             
