@@ -18,7 +18,9 @@ REAL_USER=${SUDO_USER:-$USER}
 USER_ID=$(id -u "$REAL_USER")
 
 export DISPLAY=:0
-export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$USER_ID/bus
+export XDG_RUNTIME_DIR="/run/user/$USER_ID"
+export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$USER_ID/bus"
+
 
 
 # --- FUNCTIONS ---
@@ -82,6 +84,11 @@ system_update(){
 	"$PYTHON_BIN" "$ALERT_SCRIPT" "[->] Running system update..." || true
 	apt update -y && apt upgrade -y
 }
+system_autoremove(){
+	log "Environment cleaning..."
+	"$PYTHON_BIN" "$ALERT_SCRIPT" "[->] Environment cleaning..."
+	sudo apt autoremove
+}
 
 # Verifies if VM SSD is correctly mounted
 validate_storage(){
@@ -115,42 +122,48 @@ launch_vm(){
 	fi
 
 	log "Booting up the Windows environment in a new terminal..."
-	sudo -u "$REAL_USER" DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$USER_ID/bus" gnome-terminal --title="Sentinel: VMware Engine" -- bash -c "
-	echo 'Starting VMware...';
-	$PYTHON_BIN '$ALERT_SCRIPT' '[->] Starting VMware...';
-	if vmware -x '$WIN_VM'; then
-		echo '[->] Windows VM interface is loading.';
-	    $PYTHON_BIN '$ALERT_SCRIPT' '[->] Windows VM is loaded';
-	    sleep 3;
-	else
-		echo '[!] ERROR: VMware failed to start the machine.';
-		$PYTHON_BIN '$ALERT_SCRIPT' '[!] Error: VMware failed to start the machine.';
-		exec bash;
-	fi
+	
+	sudo -u "$REAL_USER" DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$USER_ID/bus" XDG_RUNTIME_DIR="/run/user/$USER_ID" gnome-terminal --title="Sentinel: VMware Engine" -- bash -c "
+		echo 'Starting VMware...';
+		$PYTHON_BIN '$ALERT_SCRIPT' '[->] Starting VMware...';
+	
+		if vmware -x '$WIN_VM'; then
+			echo '[->] Windows VM interface is loading.';
+	    	$PYTHON_BIN '$ALERT_SCRIPT' '[->] Windows VM is loaded';
+	    	sleep 2;
+		else
+			echo '[!] ERROR: VMware failed to start the machine.';
+			$PYTHON_BIN '$ALERT_SCRIPT' '[!] Error: VMware failed to start the machine.';
+			exec bash;
+		fi
 	" &
 }
 
 # Launches Google Chrome if not already running
-launch_chrome(){
-	log "Launching Chrome... "
-	"$PYTHON_BIN" "$ALERT_SCRIPT" "[->] Launching Chrome..."
-	
-	log "Checking Chrome status..."    
-    # Check if ANY chrome process is running
+launch_chrome() {
+    log "Checking if Chrome is already active..."
     if pgrep -x "chrome" > /dev/null; then
-        log "Chrome is already running. No action taken."
+        log "Chrome is already running. No new instance needed."
         return
     fi
 
-    log "Launching Chrome with your last session..."
-	if sudo -u "$REAL_USER" gio launch /usr/share/applications/google-chrome.desktop > /dev/null 2>&1 & then
-		log 'Chrome launched successfully.'
-		$PYTHON_BIN "$ALERT_SCRIPT" "[->] Chrome launched."
-	else
-		log 'ERROR: Chrome failed to launch'
-		$PYTHON_BIN "$ALERT_SCRIPT" "[!] Error: Chrome failed to launch."
-	fi
-   
+    xhost +local:$(whoami) > /dev/null
+    rm -f "/home/$REAL_USER/.config/google-chrome/Crash Reports/pending/*.lock"
+
+    log "Opening Chrome in a detached terminal..."
+    
+    sudo -u "$REAL_USER" DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$USER_ID/bus" XDG_RUNTIME_DIR="/run/user/$USER_ID"nohup gnome-terminal --title="Sentinel: Chrome Browser" -- bash -c "
+        echo 'Initializing Chrome engine...';
+        # Hide the 'Deprecated Endpoint' noise you saw earlier
+        google-chrome --profile-directory='Default' --no-first-run 2>/dev/null;
+
+        if [ $? -ne 0 ]; then
+            echo '[!] Chrome shut down unexpectedly.';
+            exec bash;
+        fi
+    " >/dev/null 2>&1 &
+
+    disown # Detaches the job from the current terminal
 }
 
 # --- MAIN EXECUTION ---
