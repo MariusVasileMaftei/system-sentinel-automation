@@ -33,7 +33,7 @@ A proactive system orchestration and hardware management suite. This project is 
 # Clone the repository
 # ---------------------------------------------------
 
-git clone [https://github.com/MariusVasileMaftei/system-sentinel-automation.git](https://github.com/MariusVasileMaftei/system-sentinel-automation.git)
+git clone https://github.com/MariusVasileMaftei/system-sentinel-automation.git
 cd system-sentinel-automation
 
 # Set permissions
